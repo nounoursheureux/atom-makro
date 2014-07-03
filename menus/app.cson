@@ -1,0 +1,15 @@
+###
+# For more information: https://atom.io/docs/latest/creating-a-package#application-menu
+###
+
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'Makro'
+      'submenu': [
+        { 'label': 'Toggle Yeoman background', 'command': 'makro:toggleBackground' }
+      ]
+    ]
+  }
+]

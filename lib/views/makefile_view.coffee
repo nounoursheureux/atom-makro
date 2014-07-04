@@ -13,7 +13,7 @@ module.exports =
       @addClass('overlay from-top')
       @setItems(['Hello', 'World'])
 
-      @mfCache = {}
+      @_cache = {}
 
     viewForItem: (item) ->
       return "<li>#{item}</li>"
@@ -32,9 +32,9 @@ module.exports =
       else
         @makefile = makefile.path
 
-        if @makefile not in @mfCache
+        if @makefile not in @_cache
           # use an object for the cache to imitate a set datastructure
-          @mfCache[@makefile] = {}
+          @_cache[@makefile] = {}
           fs.readFile @makefile, do (mV = @) ->
             (err, data) ->
               if err
@@ -46,19 +46,19 @@ module.exports =
                 matches = line.match /([a-zA-Z-]{1,}?):/
 
                 # if it matches and it's not already in the cache
-                if matches and matches[1] not in mV.mfCache[mV.makefile]
+                if matches and matches[1] not in mV._cache[mV.makefile]
                   makefileTarget = matches[1]
                   #console.log makefileTarget
 
                   # add it to the cache
-                  mV.mfCache[mV.makefile][makefileTarget] = makefileTarget
+                  mV._cache[mV.makefile][makefileTarget] = makefileTarget
 
               mV.loadListFromCache()
         else
           @loadListFromCache()
 
     loadListFromCache: ->
-      
+      @setItems Object.keys @_cache[@makefile]
 
     open: ->
       atom.workspaceView.append(this)

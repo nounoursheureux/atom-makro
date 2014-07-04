@@ -1,7 +1,7 @@
 {
   "name": "makro",
   "main": "lib/index",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Quickly access and execute you Makefile targets.",
   "license": "MIT",
   "private": true,

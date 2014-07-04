@@ -5,6 +5,8 @@ Dawson Reid (dreid93@gmail.com)
 {SelectListView, EditorView, BufferedProcess} = require 'atom'
 
 fs = require 'fs'
+sys = require 'sys'
+exec = require('child_process').exec;
 
 module.exports =
   class MakefileView extends SelectListView
@@ -28,14 +30,33 @@ module.exports =
     viewForItem: (item) ->
       return "<li>#{item}</li>"
 
+    # launch the make process
     confirmed: (item) ->
       console.log "#{item} was selected"
-      console.log "cd #{atom.project.getRootDirectory().path} && make #{item}"
+
       command = "cd #{atom.project.getRootDirectory().path} && make #{item}"
-      args = []
-      stdout = stderr = (output) -> console.log output
-      exit = (code) -> console.log "exited with #{code}"
-      process = new BufferedProcess {command, stdout, stderr, exit}
+      console.log command
+
+      child = exec command, (error, stdout, stderr) ->
+        if error
+          console.log 'error :', error
+        console.log 'stdout :', stdout
+        console.log 'stderr :', stderr
+
+      child.on 'error', (err) ->
+        console.log 'error :', err
+
+      signalHandler = (code, signal) ->
+        console.log 'code :', code
+        console.log 'signal :', signal
+
+      child.on 'exit', signalHandler
+      child.on 'close', signalHandler
+
+      child.on 'disconnect', ->
+        console.log 'disconnect'
+
+      child.on 'message', (object, sendHandle) ->
 
     ###
     The arguement is a Atom File object. The makefile reference is only to the

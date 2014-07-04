@@ -34,7 +34,7 @@ module.exports =
 
         for entry in entries
           if entry.isFile() and entry.getBaseName() == 'Makefile'
-            console.log 'Found makefile!'
+            console.log 'found main makefile'
             makro.mainMakefile = entry
             return
 

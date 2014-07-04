@@ -19,7 +19,9 @@
   "scripts": {
     "test": "grunt"
   },
-  "dependencies": {},
+  "dependencies": {
+    "atom-message-panel": "~1.1.1"
+  },
   "devDependencies": {
     "grunt": "~0.4.2",
     "grunt-coffeelint": "0.0.8",

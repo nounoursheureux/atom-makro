@@ -3,6 +3,7 @@ Dawson Reid (dreid93@gmail.com)
 ###
 
 {SelectListView, EditorView, BufferedProcess} = require 'atom'
+{MessagePanelView, PlainMessageView} = require 'atom-message-panel'
 
 fs = require 'fs'
 sys = require 'sys'
@@ -26,6 +27,7 @@ module.exports =
       super
       @addClass 'overlay from-top'
       @_cache = {}
+      @_messagePanel = new MessagePanelView title: ''
 
     viewForItem: (item) ->
       return "<li>#{item}</li>"
@@ -33,15 +35,22 @@ module.exports =
     # launch the make process
     confirmed: (item) ->
       console.log "#{item} was selected"
+      @_messagePanel.setTitle "#{@makefile} #{item}"
+      @_messagePanel.attach()
 
       command = "cd #{atom.project.getRootDirectory().path} && make #{item}"
       console.log command
 
-      child = exec command, (error, stdout, stderr) ->
-        if error
-          console.log 'error :', error
-        console.log 'stdout :', stdout
-        console.log 'stderr :', stderr
+      # exec our child process
+      child = exec command, do (mV = @) ->
+        (error, stdout, stderr) ->
+          if error
+            console.log 'error :', error
+
+          mV._messagePanel.add new PlainMessageView
+            message: "stdout : #{stdout}"
+          mV._messagePanel.add new PlainMessageView
+            message: "stderr : #{stderr}"
 
       child.on 'error', (err) ->
         console.log 'error :', err

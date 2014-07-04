@@ -1,6 +1,17 @@
-Package created using [generator-atom-package][npm].
 
-Find more information concerning Atom package creation [here][atom-doc].
+# Makro
+**Make + Macro = Makro**
 
-[npm]: https://www.npmjs.org/package/generator-atom-package
-[atom-doc]: https://atom.io/docs/latest/creating-a-package "Official documentation"
+> Find and execute Makefile commands from within Atom!
+
+Press `ctrl-alt-x` to open a list select view of your project's top level
+Makefile. Click a Makefile target to run it.
+
+## Feature Goals
+
+- [X] Execute target from main Makefile.
+- [ ] Select Makefile within project.
+- [ ] Intelligently search Makefile for targets.
+- [ ] Stream output and errput.
+
+## Example

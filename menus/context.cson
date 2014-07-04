@@ -4,4 +4,4 @@
 
 'context-menu':
   '.workspace':
-    'Toggle Yeoman background': 'makro:toggleBackground'
+    'Toggle main Makefile targets': 'makro:toggleMainMakefile'

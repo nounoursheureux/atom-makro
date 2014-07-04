@@ -51,7 +51,7 @@ module.exports =
 
             makefileContents = data.toString().split '\n'
             for line in makefileContents # search each line for a target
-              matches = line.match /([a-zA-Z-]{1,}?):/
+              matches = line.match /(^[a-zA-Z-]{1,}?):/
 
               # if it matches and it's not already in the cache
               if matches and matches[1] not in mV._cache[mV.makefile]

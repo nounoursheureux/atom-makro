@@ -6,12 +6,14 @@ Dawson Reid (dreid93@gmail.com)
 ###
 
 MakefileView = require './views/makefile_view'
+MakefileSearchView = require './views/makefile_search_view'
 
 module.exports =
 
   setupCommands: ->
     wV = atom.workspaceView
     wV.command 'makro:toggleMainMakefile', => @toggleMainMakefile()
+    wV.command 'makro:toggleMakefileSearch', => @makefileSearchView.toggle()
 
   ###
   # This required method is called when your package is activated.
@@ -23,6 +25,7 @@ module.exports =
     @setupCommands()
 
     @makefileView = new MakefileView()
+    @makefileSearchView = new MakefileSearchView @makefileView
 
     project = atom.project
     directory = project.getRootDirectory()

@@ -13,3 +13,4 @@
 
 '.workspace':
   'ctrl-alt-x': 'makro:toggleMainMakefile'
+  'ctrl-alt-z': 'makro:toggleMakefileSearch'

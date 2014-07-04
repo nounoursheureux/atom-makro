@@ -8,7 +8,8 @@
     'submenu': [
       'label': 'Makro'
       'submenu': [
-        { 'label': 'Toggle main Makefile targets', 'command': 'makro:toggleMainMakefile' }
+        { 'label': 'Toggle main Makefile targets', 'command': 'makro:toggleMainMakefile' },
+        { 'label': 'Toggle Makefile search', 'command': 'makro:toggleMakefileSearch' }
       ]
     ]
   }

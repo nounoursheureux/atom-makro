@@ -1,1 +1,3 @@
 node_modules/
+cplusplus/*.o
+cplusplus/hellomake

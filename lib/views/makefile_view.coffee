@@ -2,8 +2,8 @@
 Dawson Reid (dreid93@gmail.com)
 ###
 
-{SelectListView} = require 'atom'
-{EditorView} = require 'atom'
+{SelectListView, EditorView, BufferedProcess} = require 'atom'
+
 fs = require 'fs'
 
 module.exports =
@@ -22,14 +22,20 @@ module.exports =
 
     initialize: ->
       super
-      @addClass('overlay from-top')
+      @addClass 'overlay from-top'
       @_cache = {}
 
     viewForItem: (item) ->
       return "<li>#{item}</li>"
 
     confirmed: (item) ->
-      console.log("#{item} was selected")
+      console.log "#{item} was selected"
+      console.log "cd #{atom.project.getRootDirectory().path} && make #{item}"
+      command = "cd #{atom.project.getRootDirectory().path} && make #{item}"
+      args = []
+      stdout = stderr = (output) -> console.log output
+      exit = (code) -> console.log "exited with #{code}"
+      process = new BufferedProcess {command, stdout, stderr, exit}
 
     ###
     The arguement is a Atom File object. The makefile reference is only to the
@@ -41,6 +47,7 @@ module.exports =
       @makefile = makefile.path
 
       if @makefile not in @_cache
+        console.log 'load makefile commands into cache'
         # use an object for the cache to imitate a set datastructure
         @_cache[@makefile] = {}
         fs.readFile @makefile, do (mV = @) ->
@@ -66,6 +73,7 @@ module.exports =
         @loadListFromCache(@makefile)
 
     loadListFromCache: (makefile) ->
+      console.log 'load makefile commands from cache'
       @title.text("#{makefile}")
       @setItems Object.keys @_cache[@makefile]
 

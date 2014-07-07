@@ -15,3 +15,5 @@ Makefile. Click a Makefile target to run it.
 - [ ] Stream output and errput.
 
 ## Example
+
+![Preview GIF](http://s21.postimg.org/l9hsrmlnr/makro_demo.gif)

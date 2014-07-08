@@ -77,6 +77,10 @@ module.exports =
       @makefile = makefile
       @title.text("#{makefile.path}")
 
+      @makefile.once 'pre-load', do (mV = @) ->
+        () ->
+          mV.setLoading 'Parsing and loading Makefile targets.'
+
       @makefile.once 'post-load', do (mV = @) ->
         (targets) ->
           mV.setItems targets

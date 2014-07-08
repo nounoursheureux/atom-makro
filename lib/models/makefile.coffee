@@ -1,17 +1,30 @@
 
 {EventEmitter} = require 'events'
+fs = require 'fs'
 
 module.exports =
   class Makefile extends EventEmitter
 
-    initialize: (makefilePath) ->
-      @path = makefilePath
+    ###
+    Takes a Atom File object.
+    ###
+    constructor: (file) ->
+      @path = file.path
 
-    _parseMakefile: () ->
-      console.log 'load makefile commands'
+    targets: ->
+      if not @_targets
+        @_parseMakefile()
+      return Object.keys @_targets
+
+    ###
+    @_targets is a cache of the targets available within this Makefile. A map
+    is used to effeciently emulate a set.
+    ###
+    _parseMakefile: ->
+      console.log 'load makefile targets'
 
       # use an object for the cache to imitate a set datastructure
-      @commands = {}
+      @_targets = {}
       fs.readFile @path, do (mf = @) ->
         (err, data) ->
           if err
@@ -23,17 +36,14 @@ module.exports =
             matches = line.match /(^[a-zA-Z-]{1,}?):/
 
             # if it matches and it's not already in the cache
-            if matches and matches[1] not in mV.commands
+            if matches and matches[1] not in mf._targets
               makefileTarget = matches[1]
               #console.log makefileTarget
 
               # add it to the cache
-              mf.commands[makefileTarget] = makefileTarget
+              mf._targets[makefileTarget] = makefileTarget
 
     run: (target, callback) ->
-
-      if not @commands # lazy load our makefile
-        @_parseMakefile()
 
       # exec our child process
       @_child = exec target, do (mV = @) ->

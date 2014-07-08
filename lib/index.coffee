@@ -7,6 +7,7 @@ Dawson Reid (dreid93@gmail.com)
 
 MakefileView = require './views/makefile_view'
 MakefileSearchView = require './views/makefile_search_view'
+Makefile = require './models/makefile'
 
 module.exports =
 
@@ -38,7 +39,7 @@ module.exports =
         for entry in entries
           if entry.isFile() and entry.getBaseName() == 'Makefile'
             console.log 'found main makefile'
-            makro.mainMakefile = entry
+            makro.mainMakefile = new Makefile(entry)
             return
 
     console.log directory

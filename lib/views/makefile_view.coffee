@@ -5,6 +5,7 @@ Dawson Reid (dreid93@gmail.com)
 {SelectListView, EditorView, BufferedProcess} = require 'atom'
 {MessagePanelView, PlainMessageView} = require 'atom-message-panel'
 
+
 fs = require 'fs'
 sys = require 'sys'
 exec = require('child_process').exec;
@@ -73,39 +74,10 @@ module.exports =
     ###
     setMakefile: (makefile) ->
       console.log 'set makefile :', makefile
-
-      @makefile = makefile.path
-
-      if @makefile not in @_cache
-        console.log 'load makefile commands into cache'
-        # use an object for the cache to imitate a set datastructure
-        @_cache[@makefile] = {}
-        fs.readFile @makefile, do (mV = @) ->
-          (err, data) ->
-            if err
-              console.log 'error reading makefile :', makefile.path
-              return
-
-            makefileContents = data.toString().split '\n'
-            for line in makefileContents # search each line for a target
-              matches = line.match /(^[a-zA-Z-]{1,}?):/
-
-              # if it matches and it's not already in the cache
-              if matches and matches[1] not in mV._cache[mV.makefile]
-                makefileTarget = matches[1]
-                #console.log makefileTarget
-
-                # add it to the cache
-                mV._cache[mV.makefile][makefileTarget] = makefileTarget
-
-            mV.loadListFromCache(mV.makefile)
-      else
-        @loadListFromCache(@makefile)
-
-    loadListFromCache: (makefile) ->
-      console.log 'load makefile commands from cache'
-      @title.text("#{makefile}")
-      @setItems Object.keys @_cache[@makefile]
+      @makefile = makefile
+      @title.text("#{makefile.path}")
+      console.log @makefile._targets
+      @setItems @makefile.targets()
 
     open: ->
       atom.workspaceView.append(this)

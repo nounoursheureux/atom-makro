@@ -76,8 +76,12 @@ module.exports =
       console.log 'set makefile :', makefile
       @makefile = makefile
       @title.text("#{makefile.path}")
-      console.log @makefile._targets
-      @setItems @makefile.targets()
+
+      @makefile.once 'post-load', do (mV = @) ->
+        (targets) ->
+          mV.setItems targets
+
+      @makefile.targets() # compute targets
 
     open: ->
       atom.workspaceView.append(this)

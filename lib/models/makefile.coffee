@@ -14,7 +14,8 @@ module.exports =
     targets: ->
       if not @_targets
         @_parseMakefile()
-      return Object.keys @_targets
+      else
+        @emit 'post-load', Object.keys @_targets
 
     ###
     @_targets is a cache of the targets available within this Makefile. A map
@@ -22,6 +23,7 @@ module.exports =
     ###
     _parseMakefile: ->
       console.log 'load makefile targets'
+      @emit 'pre-load'
 
       # use an object for the cache to imitate a set datastructure
       @_targets = {}
@@ -42,6 +44,8 @@ module.exports =
 
               # add it to the cache
               mf._targets[makefileTarget] = makefileTarget
+
+          mf.targets() # run targets to emit post-load event
 
     run: (target, callback) ->
 

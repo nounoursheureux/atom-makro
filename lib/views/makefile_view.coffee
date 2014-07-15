@@ -39,34 +39,16 @@ module.exports =
       @_messagePanel.setTitle "#{@makefile} #{item}"
       @_messagePanel.attach()
 
-      command = "cd #{atom.project.getRootDirectory().path} && make #{item}"
-      console.log command
-
-      # exec our child process
-      child = exec command, do (mV = @) ->
+      @makefile.run item, do (mV = @) ->
         (error, stdout, stderr) ->
           if error
             console.log 'error :', error
+            return
 
           mV._messagePanel.add new PlainMessageView
             message: "stdout : #{stdout}"
           mV._messagePanel.add new PlainMessageView
             message: "stderr : #{stderr}"
-
-      child.on 'error', (err) ->
-        console.log 'error :', err
-
-      signalHandler = (code, signal) ->
-        console.log 'code :', code
-        console.log 'signal :', signal
-
-      child.on 'exit', signalHandler
-      child.on 'close', signalHandler
-
-      child.on 'disconnect', ->
-        console.log 'disconnect'
-
-      child.on 'message', (object, sendHandle) ->
 
     ###
     The arguement is a Atom File object. The makefile reference is only to the
@@ -85,7 +67,7 @@ module.exports =
         (targets) ->
           mV.setItems targets
 
-      @makefile.targets() # compute targets
+      @makefile.targets() # compute targets and fire events
 
     open: ->
       atom.workspaceView.append(this)

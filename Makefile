@@ -8,5 +8,9 @@ OBJ = cplusplus/hellomake.o cplusplus/hellofunc.o
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-hellomake: $(OBJ)
+build: $(OBJ)
 	gcc -o cplusplus/hellomake $^ $(CFLAGS)
+
+clean:
+	rm cplusplus/*.o
+	rm cplusplus/hellomake

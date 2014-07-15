@@ -1,5 +1,6 @@
 
 {EventEmitter} = require 'events'
+{exec} = require 'child_process'
 fs = require 'fs'
 
 module.exports =
@@ -50,17 +51,11 @@ module.exports =
     run: (target, callback) ->
 
       # exec our child process
-      @_child = exec target, do (mV = @) ->
-        (error, stdout, stderr) ->
-          if error
-            console.log 'error :', error
-
-          mV._messagePanel.add new PlainMessageView
-            message: "stdout : #{stdout}"
-          mV._messagePanel.add new PlainMessageView
-            message: "stderr : #{stderr}"
-
-            callback(error, stdout, stderr)
+      command = "cd #{atom.project.getRootDirectory().path} && make #{target}"
+      @emit 'pre-run', target
+      @_child = exec command, (error, stdout, stderr) ->
+        @emit 'post-run', target
+        callback error, stdout, stderr
 
       @_child.on 'error', (err) ->
         console.log 'error :', err

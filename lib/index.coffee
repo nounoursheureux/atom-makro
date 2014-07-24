@@ -5,9 +5,6 @@
 Dawson Reid (dreid93@gmail.com)
 ###
 
-MakefileView = require './views/makefile_view'
-MakefileSearchView = require './views/makefile_search_view'
-Makefile = require './models/makefile'
 
 module.exports =
 
@@ -25,6 +22,8 @@ module.exports =
 
     @setupCommands()
 
+    MakefileView = require './views/makefile_view'
+    MakefileSearchView = require './views/makefile_search_view'
     @makefileView = new MakefileView()
     @makefileSearchView = new MakefileSearchView @makefileView
 
@@ -39,7 +38,11 @@ module.exports =
         for entry in entries
           if entry.isFile() and entry.getBaseName() == 'Makefile'
             console.log 'found main makefile'
+
+            Makefile = require './models/makefile'
             makro.mainMakefile = new Makefile(entry)
+
+            # track execution of makefile target
             makro.mainMakefile.on 'post-run', do (analytics = makro.analytics) ->
               (target) ->
                 console.log 'track :', target

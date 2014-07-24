@@ -20,7 +20,9 @@
     "test": "grunt"
   },
   "dependencies": {
+    "analytics-node": "^1.0.2",
     "atom-message-panel": "~1.1.1",
+    "node-uuid": "^1.4.1",
     "watchr": "~2.4.11"
   },
   "devDependencies": {

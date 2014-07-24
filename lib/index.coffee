@@ -44,6 +44,22 @@ module.exports =
 
     console.log directory
 
+    Analytics = require 'analytics-node'
+    @analytics = new Analytics 'wljs8gvpyu'
+
+    # set a unique identifier
+    if not atom.config.get 'makro.userId'
+      uuid = require 'node-uuid'
+      atom.config.set 'makro.userId', uuid.v4()
+
+    # identify the user
+    atom.config.observe 'makro.userId', {}, do (makro = @) ->
+      (userId) ->
+        console.log 'userId :', userId
+        makro.analytics.identify {
+          userId: userId
+        }
+
   ###
   # This optional method is called when the window is shutting down, allowing
   # you to return JSON to represent the state of your component.

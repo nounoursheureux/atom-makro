@@ -40,6 +40,16 @@ module.exports =
           if entry.isFile() and entry.getBaseName() == 'Makefile'
             console.log 'found main makefile'
             makro.mainMakefile = new Makefile(entry)
+            makro.mainMakefile.on 'post-run', do (analytics = makro.analytics) ->
+              (target) ->
+                console.log 'track :', target
+                analytics.track {
+                  userId: atom.config.get 'makro.userId'
+                  event: 'Run Main Makefile Command'
+                  properties:
+                    target: target
+                }
+
             return
 
     console.log directory

@@ -52,10 +52,12 @@ module.exports =
 
       # exec our child process
       command = "cd #{atom.project.getRootDirectory().path} && make #{target}"
+      console.log @
       @emit 'pre-run', target
-      @_child = exec command, (error, stdout, stderr) ->
-        @emit 'post-run', target
-        callback error, stdout, stderr
+      @_child = exec command, do (mF = @) ->
+        (error, stdout, stderr) ->
+          mF.emit 'post-run', target
+          callback error, stdout, stderr
 
       @_child.on 'error', (err) ->
         console.log 'error :', err

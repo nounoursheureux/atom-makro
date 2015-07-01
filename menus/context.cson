@@ -3,6 +3,13 @@
 ###
 
 'context-menu':
-  '.workspace':
-    'Toggle main Makefile targets': 'makro:toggleMainMakefile'
-    'Toggle Makefile search': 'makro:toggleMakefileSearch'
+  'atom-workspace': [
+    {
+      'label': 'Toggle main Makefile targets'
+      'command': 'makro:toggleMainMakefile'
+    }
+    {
+      'label': 'Toggle Makefile search'
+      'command': 'makro:toggleMakefileSearch'
+    }
+  ]

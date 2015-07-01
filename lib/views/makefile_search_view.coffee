@@ -2,20 +2,21 @@
 Dawson Reid (dreid93@gmail.com)
 ###
 
-{SelectListView, EditorView, BufferedProcess} = require 'atom'
-
+{BufferedProcess, File} = require 'atom'
+{SelectListView, TextEditorView} = require 'atom-space-pen-views'
 fs = require 'fs'
+Makefile = require '../models/makefile'
 
 module.exports =
-  class MakefileSearchView extends SelectListView
+  class MakefileView extends SelectListView
 
     # Overriden to add title bar to search view.
     @content: ->
       @div class: 'select-list', =>
         @div
           class: 'panel-heading',
-          'Selet a Makefile'
-        @subview 'filterEditorView', new EditorView(mini: true)
+          'Select a Makefile'
+        @subview 'filterEditorView', new TextEditorView(mini: true)
         @div class: 'error-message', outlet: 'error'
         @div class: 'loading', outlet: 'loadingArea', =>
           @span class: 'loading-message', outlet: 'loading'
@@ -25,23 +26,63 @@ module.exports =
     initialize: (makefileView) ->
       super
       @addClass 'overlay from-top'
+      @panel = atom.workspace.addModalPanel(item: this, visible: false)
       @makefileView = makefileView
+      atom.commands.add @filterEditorView.element, 'core:cancel', => @close()
+
+    checkDirectories: ->
+      return new Promise (resolve, reject) =>
+        promises = []
+        for dir in atom.project.getDirectories()
+          promises.push @checkDirectory(dir)
+
+        Promise.all(promises).then ->
+          resolve()
+        , (error) ->
+          reject error
+
+    checkDirectory: (directory) ->
+      return new Promise (resolve, reject) =>
+        promises = []
+        atom.project.repositoryForDirectory(directory).then (repo) =>
+          directory.getEntries (err, entries) =>
+            throw err if err
+            for entry in entries
+              if repo.isPathIgnored(entry.getRealPathSync()) then continue
+              if entry.isFile() && entry.getBaseName() == "Makefile"
+                entry.getRealPath().then (path) =>
+                  @makefiles.push(path)
+              else if entry.isDirectory()
+                promises.push @checkDirectory(entry)
+            Promise.all(promises).then ->
+              resolve()
+            , (error) ->
+              reject error
 
     viewForItem: (item) ->
       return "<li>#{item}</li>"
 
-    confirmed: (makefile) ->
-      console.log 'selected :', makefile
+    confirmed: (path) ->
+      file = new File(path, false)
+      makefile = new Makefile(file)
+      @makefileView.setMakefile(makefile)
+      @close()
 
     open: ->
-      atom.workspaceView.append(this)
-      @focusFilterEditor()
+      @makefiles = []
+      @checkDirectories().then =>
+        @setItems(@makefiles)
+        @panel.show()
+        @focusFilterEditor()
+      , (error) ->
+        throw error
 
     close: ->
-      @detach()
+      @panel.hide()
+      @filterEditorView.setText('')
 
     isOpen: ->
-      @hasParent()
+      @panel.isVisible()
 
     toggle: ->
       if @isOpen()

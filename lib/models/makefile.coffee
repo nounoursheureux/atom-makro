@@ -2,6 +2,7 @@
 {EventEmitter} = require 'events'
 {exec} = require 'child_process'
 fs = require 'fs'
+path = require 'path'
 
 module.exports =
   class Makefile extends EventEmitter
@@ -51,7 +52,7 @@ module.exports =
     run: (target, callback) ->
 
       # exec our child process
-      command = "cd #{atom.project.getRootDirectory().path} && make #{target}"
+      command = "cd #{path.dirname(@path)} && make #{target}"
       console.log @
       @emit 'pre-run', target
       @_child = exec command, do (mF = @) ->

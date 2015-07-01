@@ -16,7 +16,7 @@ module.exports = ->
 
 
     lesslint:
-      src: ['stylesheets/**/*.less']
+      src: ['styles/**/*.less']
 
     watch:
       options:
@@ -31,7 +31,7 @@ module.exports = ->
         files: ['spec/**/*.coffee']
         tasks: ['coffeelint:spec']
       stylesheets:
-        files: ['stylesheets/**/*.less']
+        files: ['styles/**/*.less']
         tasks: ['lesslint']
 
   # Load tasks

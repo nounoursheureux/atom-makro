@@ -11,6 +11,6 @@
 #   - https://atom.io/docs/latest/advanced/keymaps
 ###
 
-'.workspace':
+'atom-workspace':
   'ctrl-alt-x': 'makro:toggleMainMakefile'
-  'ctrl-alt-z': 'makro:toggleMakefileSearch'
+  'ctrl-alt-y': 'makro:toggleMakefileSearch'

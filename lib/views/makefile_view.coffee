@@ -2,7 +2,8 @@
 Dawson Reid (dreid93@gmail.com)
 ###
 
-{SelectListView, EditorView, BufferedProcess} = require 'atom'
+{BufferedProcess} = require 'atom'
+{SelectListView, TextEditorView} = require 'atom-space-pen-views'
 {MessagePanelView, PlainMessageView} = require 'atom-message-panel'
 
 
@@ -17,7 +18,7 @@ module.exports =
     @content: ->
       @div class: 'select-list', =>
         @div class: 'panel-heading', outlet: 'title'
-        @subview 'filterEditorView', new EditorView(mini: true)
+        @subview 'filterEditorView', new TextEditorView(mini: true)
         @div class: 'error-message', outlet: 'error'
         @div class: 'loading', outlet: 'loadingArea', =>
           @span class: 'loading-message', outlet: 'loading'
@@ -27,8 +28,10 @@ module.exports =
     initialize: ->
       super
       @addClass 'overlay from-top'
+      @panel = atom.workspace.addModalPanel(item: this, visible: true);
       @_cache = {}
       @_messagePanel = new MessagePanelView title: ''
+      atom.commands.add @filterEditorView.element, 'core:cancel', => @close()
 
     viewForItem: (item) ->
       return "<li>#{item}</li>"
@@ -50,6 +53,8 @@ module.exports =
           mV._messagePanel.add new PlainMessageView
             message: "stderr : #{stderr}"
 
+      @close()
+
     ###
     The arguement is a Atom File object. The makefile reference is only to the
     file path of the makefile because the object is not required.
@@ -70,14 +75,16 @@ module.exports =
       @makefile.targets() # compute targets and fire events
 
     open: ->
-      atom.workspaceView.append(this)
+      @populateList()
+      @panel.show()
       @focusFilterEditor()
 
     close: ->
-      @detach()
+      @panel.hide()
+      @filterEditorView.setText('')
 
     isOpen: ->
-      @hasParent()
+      @panel.isVisible()
 
     toggle: ->
       if @isOpen()

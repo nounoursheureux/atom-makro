@@ -48,7 +48,7 @@ module.exports =
           directory.getEntries (err, entries) =>
             throw err if err
             for entry in entries
-              if repo.isPathIgnored(entry.getRealPathSync()) then continue
+              if repo && repo.isPathIgnored(entry.getRealPathSync()) then continue
               if entry.isFile() && entry.getBaseName() == "Makefile"
                 entry.getRealPath().then (path) =>
                   @makefiles.push(path)
